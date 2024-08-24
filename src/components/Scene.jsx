@@ -14,10 +14,11 @@ const Scene = () => {
       <OrbitControls
         maxAzimuthAngle={THREE.MathUtils.degToRad(10)}
         minAzimuthAngle={-THREE.MathUtils.degToRad(10)}
-        maxPolarAngle={THREE.MathUtils.degToRad(85)}
-        minPolarAngle={THREE.MathUtils.degToRad(75)}
+        maxPolarAngle={THREE.MathUtils.degToRad(82)}
+        minPolarAngle={THREE.MathUtils.degToRad(78)}
+        enableZoom={false}
       />
-      <Avatar position={[0, -4.5, 2]} scale={3} />
+      <Avatar position={[0, -4.2, 2]} scale={3} />
       <Environment preset="sunset" />
       <mesh>
         <planeGeometry args={[viewport.width * 1.5, viewport.height * 1.5]} />

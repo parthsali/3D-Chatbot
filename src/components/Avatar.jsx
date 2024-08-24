@@ -1,7 +1,92 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { useAnimations, useFBX, useGLTF } from "@react-three/drei";
+import { useControls } from "leva";
+import { useFrame, useLoader } from "@react-three/fiber";
+import * as THREE from "three";
 
 export function Avatar(props) {
+  const { playAudio, script } = useControls({
+    playAudio: false,
+    script: {
+      value: "welcome",
+      options: ["welcome", "pizzas"],
+    },
+  });
+
+  const corresponding = {
+    A: "viseme_PP",
+    B: "viseme_kk",
+    C: "viseme_I",
+    D: "viseme_AA",
+    E: "viseme_O",
+    F: "viseme_U",
+    G: "viseme_FF",
+    H: "viseme_TH",
+    X: "viseme_PP",
+  };
+
+  const audio = useMemo(() => new Audio(`/audio/${script}.mp3`), [script]);
+  const jsonFile = useLoader(THREE.FileLoader, `/audio/${script}.json`);
+  const lipsync = JSON.parse(jsonFile);
+
+  useFrame(() => {
+    const currentAudioTime = audio.currentTime;
+
+    if (audio.ended || audio.paused) {
+      setAnimation("Idle");
+      return;
+    }
+
+    Object.values(corresponding).forEach((value) => {
+      nodes.Wolf3D_Head.morphTargetInfluences[
+        nodes.Wolf3D_Head.morphTargetDictionary[value]
+      ] = 0;
+      nodes.Wolf3D_Teeth.morphTargetInfluences[
+        nodes.Wolf3D_Teeth.morphTargetDictionary[value]
+      ] = 0;
+    });
+
+    for (let i = 0; i < lipsync.mouthCues.length; i++) {
+      const mouthCue = lipsync.mouthCues[i];
+
+      if (
+        currentAudioTime >= mouthCue.start &&
+        currentAudioTime <= mouthCue.end
+      ) {
+        nodes.Wolf3D_Head.morphTargetInfluences[
+          nodes.Wolf3D_Head.morphTargetDictionary[corresponding[mouthCue.value]]
+        ] = 1;
+        nodes.Wolf3D_Teeth.morphTargetInfluences[
+          nodes.Wolf3D_Teeth.morphTargetDictionary[
+            corresponding[mouthCue.value]
+          ]
+        ] = 1;
+
+        break;
+      }
+    }
+  });
+
+  useEffect(() => {
+    if (playAudio) {
+      audio.play();
+      if (script == "welcome") {
+        setAnimation("Greetings");
+      }
+      if (script == "pizzas") {
+        setAnimation("Idle");
+      }
+    } else {
+      audio.pause();
+    }
+
+    return () => {
+      audio.pause();
+      audio.currentTime = 0;
+      setAnimation("Idle");
+    };
+  }, [playAudio]);
+
   const { nodes, materials } = useGLTF("/models/64722c41c977ad9f22319186.glb");
 
   const { animations: idelAnimation } = useFBX("animations/Idle.fbx");
@@ -10,7 +95,7 @@ export function Avatar(props) {
   idelAnimation[0].name = "Idle";
   greetingAnimation[0].name = "Greetings";
 
-  const [animation, setAnimation] = React.useState("Greetings");
+  const [animation, setAnimation] = React.useState("Idle");
   const groupRef = useRef();
   const { actions } = useAnimations(
     [idelAnimation[0], greetingAnimation[0]],
