@@ -5,11 +5,10 @@ import { useFrame, useLoader } from "@react-three/fiber";
 import * as THREE from "three";
 
 export function Avatar(props) {
-  const { playAudio, script } = useControls({
-    playAudio: false,
-    script: {
-      value: "welcome",
-      options: ["welcome", "pizzas"],
+  const { playAudio } = useControls({
+    playAudio: {
+      label: "Say Hello!",
+      value: false,
     },
   });
 
@@ -25,8 +24,8 @@ export function Avatar(props) {
     X: "viseme_PP",
   };
 
-  const audio = useMemo(() => new Audio(`/audio/${script}.mp3`), [script]);
-  const jsonFile = useLoader(THREE.FileLoader, `/audio/${script}.json`);
+  const audio = useMemo(() => new Audio(`/audio/intro.mp3`), []);
+  const jsonFile = useLoader(THREE.FileLoader, `/audio/intro.json`);
   const lipsync = JSON.parse(jsonFile);
 
   useFrame(() => {
@@ -70,12 +69,7 @@ export function Avatar(props) {
   useEffect(() => {
     if (playAudio) {
       audio.play();
-      if (script == "welcome") {
-        setAnimation("Greetings");
-      }
-      if (script == "pizzas") {
-        setAnimation("Idle");
-      }
+      setAnimation("Greetings");
     } else {
       audio.pause();
     }
