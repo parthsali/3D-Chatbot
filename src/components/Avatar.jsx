@@ -1,10 +1,30 @@
-import React, { useRef } from "react";
-import { useGLTF } from "@react-three/drei";
+import React, { useEffect, useRef } from "react";
+import { useAnimations, useFBX, useGLTF } from "@react-three/drei";
 
 export function Avatar(props) {
   const { nodes, materials } = useGLTF("/models/64722c41c977ad9f22319186.glb");
+
+  const { animations: idelAnimation } = useFBX("animations/Idle.fbx");
+  const { animations: greetingAnimation } = useFBX("animations/Greeting.fbx");
+
+  idelAnimation[0].name = "Idle";
+  greetingAnimation[0].name = "Greetings";
+
+  const [animation, setAnimation] = React.useState("Greetings");
+  const groupRef = useRef();
+  const { actions } = useAnimations(
+    [idelAnimation[0], greetingAnimation[0]],
+    groupRef
+  );
+
+  useEffect(() => {
+    actions[animation].reset().fadeIn(0.5).play();
+
+    return () => actions[animation].fadeOut(0.5);
+  }, [animation]);
+
   return (
-    <group {...props} dispose={null}>
+    <group {...props} dispose={null} ref={groupRef}>
       <primitive object={nodes.Hips} />
       <skinnedMesh
         name="EyeLeft"
