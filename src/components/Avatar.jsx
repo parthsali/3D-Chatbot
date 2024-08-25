@@ -81,7 +81,9 @@ export function Avatar(props) {
     };
   }, [playAudio]);
 
-  const { nodes, materials } = useGLTF("/models/64722c41c977ad9f22319186.glb");
+  const { nodes, materials } = useGLTF(
+    "https://models.readyplayer.me/64722c41c977ad9f22319186.glb?morphTargets=Oculus%20Visemes"
+  );
 
   const { animations: idelAnimation } = useFBX("animations/Idle.fbx");
   const { animations: greetingAnimation } = useFBX("animations/Greeting.fbx");
@@ -166,4 +168,6 @@ export function Avatar(props) {
   );
 }
 
-useGLTF.preload("/models/64722c41c977ad9f22319186.glb");
+useGLTF.preload(
+  "https://models.readyplayer.me/64722c41c977ad9f22319186.glb?morphTargets=Oculus%20Visemes"
+);
