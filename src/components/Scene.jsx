@@ -1,14 +1,18 @@
-import { OrbitControls, useTexture } from "@react-three/drei";
+import { OrbitControls, useHelper, useTexture } from "@react-three/drei";
 import { Avatar } from "./Avatar";
 import { Environment } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 
 import * as THREE from "three";
 import Button from "./Button";
+import { useRef } from "react";
 
 const Scene = () => {
-  const texture = useTexture("textures/first.jpg");
+  const texture = useTexture("textures/second.jpg");
   const viewport = useThree((state) => state.viewport);
+  const pointRef = useRef();
+
+  useHelper(pointRef, THREE.PointLightHelper, "red");
 
   return (
     <>
@@ -20,7 +24,15 @@ const Scene = () => {
         enableZoom={false}
       />
       <Avatar position={[0, -4.2, 2]} scale={3} />
-      <Environment preset="sunset" />
+      <Environment preset="dawn" />
+
+      <pointLight
+        ref={pointRef}
+        position={[1, -3, 2]}
+        intensity={1}
+        color={0x0c3cb3}
+      />
+      <pointLight position={[-1, -3, 2]} intensity={1} color={0xefefef} />
       <mesh>
         <planeGeometry args={[viewport.width * 1.5, viewport.height * 1.5]} />
         <meshBasicMaterial map={texture} />
