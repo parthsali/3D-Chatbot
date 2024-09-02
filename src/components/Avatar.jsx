@@ -3,14 +3,10 @@ import { useAnimations, useFBX, useGLTF } from "@react-three/drei";
 import { useControls } from "leva";
 import { useFrame, useLoader } from "@react-three/fiber";
 import * as THREE from "three";
+import { useStore } from "../store";
 
 export function Avatar(props) {
-  const { playAudio } = useControls({
-    playAudio: {
-      label: "Say Hello!",
-      value: false,
-    },
-  });
+  const playAudio = useStore((state) => state.sayHello);
 
   const corresponding = {
     A: "viseme_PP",
@@ -33,6 +29,7 @@ export function Avatar(props) {
 
     if (audio.ended || audio.paused) {
       setAnimation("Idle");
+
       return;
     }
 

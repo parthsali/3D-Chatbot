@@ -4,6 +4,7 @@ import { Environment } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 
 import * as THREE from "three";
+import Button from "./Button";
 
 const Scene = () => {
   const texture = useTexture("textures/first.jpg");
@@ -24,6 +25,7 @@ const Scene = () => {
         <planeGeometry args={[viewport.width * 1.5, viewport.height * 1.5]} />
         <meshBasicMaterial map={texture} />
       </mesh>
+      <Button />
     </>
   );
 };
