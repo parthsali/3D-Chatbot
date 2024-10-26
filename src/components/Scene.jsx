@@ -8,7 +8,7 @@ import Button from "./Button";
 import { useRef } from "react";
 
 const Scene = () => {
-  const texture = useTexture("textures/second.jpg");
+  const texture = useTexture("textures/first.jpg");
   const viewport = useThree((state) => state.viewport);
   const pointRef = useRef();
 
